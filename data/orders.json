@@ -1,0 +1,30 @@
+[
+  {
+    "id": "ORD-1786844228756",
+    "items": [
+      {
+        "id": 4,
+        "name": "White Summer Tee - Edition 1",
+        "price": "₦15,000",
+        "image": "/product4.jpeg",
+        "quantity": 1
+      },
+      {
+        "id": 3,
+        "name": "Red Summer Tee - Edition 1",
+        "price": "₦15,000",
+        "image": "/product3.jpeg",
+        "quantity": 1
+      }
+    ],
+    "total": 30000,
+    "customer": {
+      "name": "Ehinomen2",
+      "email": "buskiose@gmail.com",
+      "address": "delta state "
+    },
+    "status": "paid",
+    "createdAt": "2026-08-16T01:37:08.756Z",
+    "paidAt": "2026-08-16T01:37:13.881Z"
+  }
+]
