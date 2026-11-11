@@ -8,8 +8,9 @@ import type { Order } from './orders';
  * - Otherwise → a local JSON file at data/orders.json (your computer only; git-ignored).
  */
 
-const SUPABASE_URL = process.env.SUPABASE_URL;
-const SUPABASE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
+// Accept either https://xyz.supabase.co or the longer https://xyz.supabase.co/rest/v1/ form.
+const SUPABASE_URL = process.env.SUPABASE_URL ? new URL(process.env.SUPABASE_URL.trim()).origin : undefined;
+const SUPABASE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY?.trim();
 
 let supabase: SupabaseClient | null = null;
 if (SUPABASE_URL && SUPABASE_KEY) {
