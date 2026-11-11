@@ -1,7 +1,7 @@
 // Cloudflare Workers settings for hosting B&GV (via the OpenNext adapter).
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "bgv-global",
+  "name": "bgv-website",
   "main": ".open-next/worker.js",
   "compatibility_date": "2026-11-01",
   "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
@@ -9,6 +9,6 @@
     "directory": ".open-next/assets",
     "binding": "ASSETS"
   },
-  "services": [{ "binding": "WORKER_SELF_REFERENCE", "service": "bgv-global" }],
+  "services": [{ "binding": "WORKER_SELF_REFERENCE", "service": "bgv-website" }],
   "observability": { "enabled": true }
 }

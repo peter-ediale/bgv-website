@@ -54,11 +54,11 @@ Order: **Supabase → Paystack → Cloudflare → connect them**. Budget about 1
 1. Go to **dash.cloudflare.com** → sign up (free plan).
 2. **Workers & Pages → Create → Import a repository** → connect GitHub → pick `bgv-website`.
 3. Settings on that screen:
-   - Project name: **`bgv-global`** (must match `"name"` in `wrangler.jsonc`)
+   - Project name: **`bgv-website`** (must match `"name"` in `wrangler.jsonc`)
    - Build command: `npx opennextjs-cloudflare build`
    - Deploy command: `npx wrangler deploy --keep-vars`
 4. Click **Deploy**. The first build takes a few minutes. When it finishes you'll get a link like
-   `https://bgv-global.<your-name>.workers.dev` — that's your live site! Copy it.
+   `https://bgv-website.<your-name>.workers.dev` — that's your live site! Copy it.
 5. Open the Worker → **Settings → Variables and Secrets** → *Add* each of these as type **Secret**:
 
    | Name | Value |
@@ -70,7 +70,7 @@ Order: **Supabase → Paystack → Cloudflare → connect them**. Budget about 1
    | `SUPABASE_SERVICE_ROLE_KEY` | from step 1 |
 
 6. Open **Settings → Build → Variables and secrets** (the *build* ones) and add:
-   `NEXT_PUBLIC_BASE_URL` = your `https://bgv-global.….workers.dev` link.
+   `NEXT_PUBLIC_BASE_URL` = your `https://bgv-website.….workers.dev` link.
 7. Go to **Deployments → Retry / Redeploy** so the new settings are used.
 
 From now on, every time code is pushed to GitHub, Cloudflare rebuilds the site automatically.
@@ -79,7 +79,7 @@ From now on, every time code is pushed to GitHub, Cloudflare rebuilds the site a
 
 Paystack → **Settings → API Keys & Webhooks** → *Test Webhook URL*:
 ```
-https://bgv-global.<your-name>.workers.dev/api/payments/webhook
+https://bgv-website.<your-name>.workers.dev/api/payments/webhook
 ```
 This confirms payments even if a customer closes their browser right after paying.
 
