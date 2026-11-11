@@ -1,96 +1,142 @@
-import fs from 'fs';
-import path from 'path';
+import 'server-only';
+import { createClient, type SupabaseClient } from '@supabase/supabase-js';
+import type { Order } from './orders';
 
-const DATA_DIR = path.join(process.cwd(), 'data');
-const JSON_DB = path.join(DATA_DIR, 'orders.json');
+/*
+ * Order storage.
+ * - If SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are set → Supabase (production).
+ * - Otherwise → a local JSON file at data/orders.json (your computer only; git-ignored).
+ */
 
-// Try to use better-sqlite3 when available; fall back to a simple JSON file store for local dev
-let db: any = null;
-try {
-  // Use indirect require to avoid static bundler resolution when native module isn't present
-  // eslint-disable-next-line @typescript-eslint/no-implied-eval
-  const Database = eval("require")('better-sqlite3');
-  const DB_PATH = path.join(process.cwd(), 'data', 'orders.db');
-  db = new Database(DB_PATH);
+const SUPABASE_URL = process.env.SUPABASE_URL;
+const SUPABASE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
-  // initialize orders table
-  db.prepare(
-    `CREATE TABLE IF NOT EXISTS orders (
-      id TEXT PRIMARY KEY,
-      items TEXT,
-      total INTEGER,
-      customer TEXT,
-      status TEXT,
-      createdAt TEXT,
-      paidAt TEXT
-    )`
-  ).run();
-} catch (err) {
-  // fallback: ensure data dir and json file exist
-  if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
-  if (!fs.existsSync(JSON_DB)) fs.writeFileSync(JSON_DB, JSON.stringify([]));
+let supabase: SupabaseClient | null = null;
+if (SUPABASE_URL && SUPABASE_KEY) {
+  supabase = createClient(SUPABASE_URL, SUPABASE_KEY, { auth: { persistSession: false } });
 }
 
-function readJsonDB(): any[] {
-  try {
-    const raw = fs.readFileSync(JSON_DB, 'utf-8');
-    return JSON.parse(raw || '[]');
-  } catch (e) {
-    return [];
+let warned = false;
+
+// ---- Supabase row mapping (snake_case columns) -------------------------------
+
+type Row = {
+  id: string;
+  items: Order['items'];
+  subtotal: number;
+  delivery_fee: number;
+  total: number;
+  customer: Order['customer'];
+  status: Order['status'];
+  created_at: string;
+  paid_at: string | null;
+};
+
+const toRow = (o: Order): Row => ({
+  id: o.id,
+  items: o.items,
+  subtotal: o.subtotal,
+  delivery_fee: o.deliveryFee,
+  total: o.total,
+  customer: o.customer,
+  status: o.status,
+  created_at: o.createdAt,
+  paid_at: o.paidAt,
+});
+
+const fromRow = (r: Row): Order => ({
+  id: r.id,
+  items: r.items,
+  subtotal: r.subtotal,
+  deliveryFee: r.delivery_fee,
+  total: r.total,
+  customer: r.customer,
+  status: r.status,
+  createdAt: r.created_at,
+  paidAt: r.paid_at,
+});
+
+// ---- Local JSON file (development only) --------------------------------------
+
+async function localFile() {
+  if (!warned && process.env.NODE_ENV === 'production') {
+    warned = true;
+    console.warn('[db] Supabase is not configured — using a local file. Orders will NOT persist on a host.');
   }
+  const fs = await import('node:fs/promises');
+  const path = await import('node:path');
+  const dir = path.join(process.cwd(), 'data');
+  const file = path.join(dir, 'orders.json');
+  return {
+    async read(): Promise<Order[]> {
+      try {
+        return JSON.parse(await fs.readFile(file, 'utf-8')) as Order[];
+      } catch {
+        return [];
+      }
+    },
+    async write(rows: Order[]) {
+      await fs.mkdir(dir, { recursive: true });
+      await fs.writeFile(file, JSON.stringify(rows, null, 2));
+    },
+  };
 }
 
-function writeJsonDB(rows: any[]) {
-  fs.writeFileSync(JSON_DB, JSON.stringify(rows, null, 2));
-}
+// ---- Public API ---------------------------------------------------------------
 
-export function insertOrder(order: any) {
-  if (db) {
-    const stmt = db.prepare('INSERT INTO orders (id, items, total, customer, status, createdAt) VALUES (?, ?, ?, ?, ?, ?)');
-    return stmt.run(order.id, JSON.stringify(order.items), order.total, JSON.stringify(order.customer), order.status, order.createdAt);
+export async function insertOrder(order: Order): Promise<void> {
+  if (supabase) {
+    const { error } = await supabase.from('orders').insert(toRow(order));
+    if (error) throw new Error(`insertOrder: ${error.message}`);
+    return;
   }
-
-  const rows = readJsonDB();
-  rows.unshift({ ...order });
-  writeJsonDB(rows);
-  return { changes: 1 };
+  const db = await localFile();
+  const rows = await db.read();
+  rows.unshift(order);
+  await db.write(rows);
 }
 
-export function updateOrderStatus(id: string, status: string) {
-  if (db) {
-    const stmt = db.prepare('UPDATE orders SET status = ?, paidAt = ? WHERE id = ?');
-    return stmt.run(status, status === 'paid' ? new Date().toISOString() : null, id);
+export async function getOrder(id: string): Promise<Order | null> {
+  if (supabase) {
+    const { data, error } = await supabase.from('orders').select('*').eq('id', id).maybeSingle();
+    if (error) throw new Error(`getOrder: ${error.message}`);
+    return data ? fromRow(data as Row) : null;
   }
-
-  const rows = readJsonDB();
-  const idx = rows.findIndex((r) => r.id === id);
-  if (idx === -1) return { changes: 0 };
-  rows[idx].status = status;
-  rows[idx].paidAt = status === 'paid' ? new Date().toISOString() : null;
-  writeJsonDB(rows);
-  return { changes: 1 };
+  const rows = await (await localFile()).read();
+  return rows.find((r) => r.id === id) ?? null;
 }
 
-export function getOrders() {
-  if (db) {
-    const stmt = db.prepare('SELECT * FROM orders ORDER BY createdAt DESC');
-    return stmt.all().map((r: any) => ({ ...r, items: JSON.parse(r.items), customer: JSON.parse(r.customer) }));
+export async function getOrders(): Promise<Order[]> {
+  if (supabase) {
+    const { data, error } = await supabase.from('orders').select('*').order('created_at', { ascending: false });
+    if (error) throw new Error(`getOrders: ${error.message}`);
+    return (data as Row[]).map(fromRow);
   }
-
-  const rows = readJsonDB();
-  return rows.map((r) => ({ ...r }));
+  return (await localFile()).read();
 }
 
-export function getOrder(id: string) {
-  if (db) {
-    const stmt = db.prepare('SELECT * FROM orders WHERE id = ?');
-    const r = stmt.get(id);
-    if (!r) return null;
-    return { ...r, items: JSON.parse(r.items), customer: JSON.parse(r.customer) };
+/**
+ * Mark a pending order as paid. Returns true only the first time
+ * (so confirmation emails are sent once, even if Paystack calls us twice).
+ */
+export async function markOrderPaid(id: string): Promise<boolean> {
+  const paidAt = new Date().toISOString();
+  if (supabase) {
+    const { data, error } = await supabase
+      .from('orders')
+      .update({ status: 'paid', paid_at: paidAt })
+      .eq('id', id)
+      .eq('status', 'pending')
+      .select('id');
+    if (error) throw new Error(`markOrderPaid: ${error.message}`);
+    return (data?.length ?? 0) > 0;
   }
-
-  const rows = readJsonDB();
-  return rows.find((r) => r.id === id) || null;
+  const db = await localFile();
+  const rows = await db.read();
+  const row = rows.find((r) => r.id === id);
+  if (!row || row.status !== 'pending') return false;
+  row.status = 'paid';
+  row.paidAt = paidAt;
+  await db.write(rows);
+  return true;
 }
-
-export default db;

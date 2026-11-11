@@ -8,7 +8,7 @@ export default function AdminLogoutPage() {
 
   useEffect(() => {
     (async () => {
-      await fetch('/api/admin/logout');
+      await fetch('/api/admin/logout', { method: 'POST' });
       router.push('/admin/login');
     })();
   }, [router]);

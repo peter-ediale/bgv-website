@@ -2,17 +2,11 @@
 
 import Image from 'next/image';
 import { useRef, useState, useEffect } from 'react';
-import { focalMap } from '../../lib/catalog';
+import type { Product } from '../../lib/catalog';
+import { formatNaira } from '../../lib/catalog';
 
 type Props = {
-  product: {
-    id: number;
-    name: string;
-    price: string;
-    image: string;
-    category: string;
-    color?: string;
-  };
+  product: Product;
   modelImages: string[]; // ordered list of model images for the product color
 };
 
@@ -24,7 +18,6 @@ export default function ProductCard({ product, modelImages }: Props) {
   const autoplayRef = useRef<number | null>(null);
 
   const TILT_STRENGTH = 6; // degrees, reduced for a more subtle effect
-  const CROSSFADE_MS = 400; // faster crossfade
   const THUMB_SIZE = 48; // px
   const AUTOPLAY_INTERVAL = 1800; // ms
 
@@ -101,10 +94,10 @@ export default function ProductCard({ product, modelImages }: Props) {
 
       <div className="relative aspect-square overflow-hidden bg-[#F0ECE4] rounded-lg transition-transform duration-500">
         <Image
-          src={product.image}
+          src={product.images[0]}
           alt={product.name}
           fill
-          style={{ objectPosition: focalMap[product.image] || 'center' }}
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
           className="object-cover transition-opacity duration-400"
         />
 
@@ -115,7 +108,7 @@ export default function ProductCard({ product, modelImages }: Props) {
               src={activeImage}
               alt={`${product.name} model`}
               fill
-              style={{ objectPosition: focalMap[activeImage] || 'center' }}
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
               className="object-cover opacity-90 transition-opacity duration-400"
             />
           </div>
@@ -139,7 +132,7 @@ export default function ProductCard({ product, modelImages }: Props) {
                   onFocus={() => setSelectedIdx(i)}
                   onMouseLeave={() => setSelectedIdx(null)}
                   onBlur={() => setSelectedIdx(null)}
-                  className={`h-${THUMB_SIZE} w-${THUMB_SIZE} rounded-md overflow-hidden border ${selectedIdx === i ? 'ring-2 ring-[#C9A96E]' : 'border-transparent'}`}
+                  className={`rounded-md overflow-hidden border ${selectedIdx === i ? 'ring-2 ring-[#C9A96E]' : 'border-transparent'}`}
                   style={{ height: THUMB_SIZE, width: THUMB_SIZE }}
                 >
                   <Image src={mi} alt={`thumb-${i}`} width={THUMB_SIZE} height={THUMB_SIZE} className="object-cover" />
@@ -153,7 +146,7 @@ export default function ProductCard({ product, modelImages }: Props) {
       <div className="mt-4">
         <p className="text-sm text-[#8B7A6B] uppercase tracking-wider">{product.category}</p>
         <h3 className="font-medium text-[#1A1A1A] mt-1">{product.name}</h3>
-        <p className="text-[#C9A96E] font-semibold mt-1">{product.price}</p>
+        <p className="text-[#C9A96E] font-semibold mt-1">{formatNaira(product.price)}</p>
       </div>
     </div>
   );

@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import Image from 'next/image';
 import CartButton from './components/CartButton';
 import FeaturedSection from './components/FeaturedSection';
@@ -24,11 +25,11 @@ export default function Home() {
         
         <div className="hidden md:flex gap-8 text-sm font-medium text-[#4A4A4A]">
           <a href="#" className="hover:text-[#C9A96E] transition-colors">Home</a>
-          <a href="/shop" className="hover:text-[#C9A96E] transition-colors">Shop</a>
+          <Link href="/shop" className="hover:text-[#C9A96E] transition-colors">Shop</Link>
 
-          <a href="/about" className="hover:text-[#C9A96E] transition-colors">About</a>
+          <Link href="/about" className="hover:text-[#C9A96E] transition-colors">About</Link>
 
-          <a href="/contact" className="hover:text-[#C9A96E] transition-colors">Contact</a>
+          <Link href="/contact" className="hover:text-[#C9A96E] transition-colors">Contact</Link>
 
         </div>
         

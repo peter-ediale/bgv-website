@@ -1,4 +1,6 @@
+import Link from 'next/link';
 import Image from 'next/image';
+import CartButton from '../components/CartButton';
 
 export default function ContactPage() {
   return (
@@ -16,24 +18,22 @@ export default function ContactPage() {
         </div>
         
         <div className="hidden md:flex gap-8 text-sm font-medium text-[#4A4A4A]">
-          <a href="/" className="hover:text-[#C9A96E] transition-colors">Home</a>
-          <a href="/shop" className="hover:text-[#C9A96E] transition-colors">Shop</a>
-          <a href="/about" className="hover:text-[#C9A96E] transition-colors">About</a>
-          <a href="/contact" className="text-[#C9A96E] transition-colors">Contact</a>
+          <Link href="/" className="hover:text-[#C9A96E] transition-colors">Home</Link>
+          <Link href="/shop" className="hover:text-[#C9A96E] transition-colors">Shop</Link>
+          <Link href="/about" className="hover:text-[#C9A96E] transition-colors">About</Link>
+          <Link href="/contact" className="text-[#C9A96E] transition-colors">Contact</Link>
         </div>
         
-        <button className="px-4 py-2 border border-[#1A1A1A] rounded-full text-sm hover:bg-[#1A1A1A] hover:text-white transition-all duration-300">
-          Cart (0)
-        </button>
+        <CartButton />
       </nav>
 
       {/* Contact Header */}
       <div className="text-center py-12 px-4">
         <h1 className="font-serif text-4xl md:text-5xl font-bold text-[#1A1A1A]">
-          Let's Connect
+          Let&apos;s Connect
         </h1>
         <p className="mt-2 text-[#8B7A6B] text-sm tracking-[0.2em] uppercase">
-          We'd love to hear from you
+          We&apos;d love to hear from you
         </p>
       </div>
 
@@ -48,7 +48,7 @@ export default function ContactPage() {
             </h2>
             <p className="text-[#4A4A4A] leading-relaxed mb-8">
               Have a question about your order, want to collaborate, or just want to 
-              share some good vibes? We're all ears.
+              share some good vibes? We&apos;re all ears.
             </p>
 
             <div className="space-y-6">
@@ -140,7 +140,7 @@ export default function ContactPage() {
                 Send Message ✨
               </button>
               <p className="text-xs text-[#8B7A6B] text-center mt-2">
-                We'll get back to you within 24 hours
+                We&apos;ll get back to you within 24 hours
               </p>
             </form>
           </div>

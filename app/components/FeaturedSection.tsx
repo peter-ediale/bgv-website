@@ -1,7 +1,9 @@
-import Image from 'next/image';
 import Link from 'next/link';
 import FeaturedProductPreview from './FeaturedProductPreview';
-import { products, productsEdition2, getModelsByColor } from '../../lib/catalog';
+import { getProductsByEdition, getModelPhotos } from '../../lib/catalog';
+
+const edition1 = getProductsByEdition(1);
+const edition2 = getProductsByEdition(2);
 
 export default function FeaturedSection() {
   return (
@@ -22,9 +24,9 @@ export default function FeaturedSection() {
               </div>
 
               <div className="grid grid-cols-2 gap-2 mt-4">
-                {products.slice(0,4).map((p) => (
+                {edition1.slice(0,4).map((p) => (
                   <div key={p.id}>
-                    <FeaturedProductPreview imageSrc={p.image} alt={p.name} modelImages={getModelsByColor(p.color)} />
+                    <FeaturedProductPreview imageSrc={p.images[0]} alt={p.name} modelImages={getModelPhotos(p)} />
                   </div>
                 ))}
               </div>
@@ -43,9 +45,9 @@ export default function FeaturedSection() {
               </div>
 
               <div className="grid grid-cols-2 gap-2 mt-4">
-                {productsEdition2.length ? productsEdition2.slice(0,4).map((p) => (
+                {edition2.length ? edition2.slice(0,4).map((p) => (
                   <div key={p.id}>
-                    <FeaturedProductPreview imageSrc={p.image} alt={p.name} modelImages={getModelsByColor(p.color)} />
+                    <FeaturedProductPreview imageSrc={p.images[0]} alt={p.name} modelImages={getModelPhotos(p)} />
                   </div>
                 )) : (
                   [1,2,3,4].map((i) => (

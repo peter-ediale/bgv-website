@@ -2,7 +2,6 @@
 
 import Image from 'next/image';
 import { useState, useEffect } from 'react';
-import { focalMap } from '../../lib/catalog';
 
 type Props = {
   imageSrc: string;
@@ -34,7 +33,7 @@ export default function FeaturedProductPreview({ imageSrc, alt, modelImages }: P
         src={imageSrc}
         alt={alt || 'product preview'}
         fill
-        style={{ objectPosition: focalMap[imageSrc] || 'center' }}
+        sizes="(max-width: 768px) 50vw, 25vw"
         className="object-cover"
       />
       {hovering && modelImages[idx] && (
@@ -43,7 +42,7 @@ export default function FeaturedProductPreview({ imageSrc, alt, modelImages }: P
             src={modelImages[idx]}
             alt={`model ${idx + 1}`}
             fill
-            style={{ objectPosition: focalMap[modelImages[idx]] || 'center' }}
+            sizes="(max-width: 768px) 50vw, 25vw"
             className="object-cover transition-opacity duration-500"
           />
         </div>

@@ -39,3 +39,12 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# keep the env template
+!.env.example
+
+# local order data (contains customer details — never commit)
+/data/
+
+# local tool settings
+/.claude/

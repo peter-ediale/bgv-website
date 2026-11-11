@@ -1,4 +1,6 @@
+import Link from 'next/link';
 import Image from 'next/image';
+import CartButton from '../components/CartButton';
 
 export default function AboutPage() {
   return (
@@ -16,17 +18,15 @@ export default function AboutPage() {
         </div>
         
         <div className="hidden md:flex gap-8 text-sm font-medium text-[#4A4A4A]">
-          <a href="/" className="hover:text-[#C9A96E] transition-colors">Home</a>
-          <a href="/shop" className="hover:text-[#C9A96E] transition-colors">Shop</a>
+          <Link href="/" className="hover:text-[#C9A96E] transition-colors">Home</Link>
+          <Link href="/shop" className="hover:text-[#C9A96E] transition-colors">Shop</Link>
 
-          <a href="/about" className="text-[#C9A96E] transition-colors">About</a>
-          <a href="/contact" className="hover:text-[#C9A96E] transition-colors">Contact</a>
+          <Link href="/about" className="text-[#C9A96E] transition-colors">About</Link>
+          <Link href="/contact" className="hover:text-[#C9A96E] transition-colors">Contact</Link>
 
         </div>
         
-        <button className="px-4 py-2 border border-[#1A1A1A] rounded-full text-sm hover:bg-[#1A1A1A] hover:text-white transition-all duration-300">
-          Cart (0)
-        </button>
+        <CartButton />
       </nav>
 
       {/* About Content */}
@@ -48,12 +48,12 @@ export default function AboutPage() {
             The brand is a reflection of a personal outlook on life: 
             staying positive no matter the situation, keeping a happy face through hard times, 
             having a strong sense of style and vibe in everything from parties to everyday life, 
-            and crediting it all to one thing above everything else — God's blessings.
+            and crediting it all to one thing above everything else — God&apos;s blessings.
           </p>
           
           <p>
             The first edition launched in 2024.
-            It was a prototype, the goal wasn't perfection, it was getting the idea 
+            It was a prototype, the goal wasn&apos;t perfection, it was getting the idea 
             out of the head and into the world.
           </p>
           
@@ -81,7 +81,7 @@ export default function AboutPage() {
             <p className="mt-3 text-[#4A4A4A] leading-relaxed">
               To become a leading clothing brand in Africa, recognized for our 
               unique clothing style and comfort, while making a positive impact 
-              on our customers' lives.
+              on our customers&apos; lives.
             </p>
           </div>
         </div>

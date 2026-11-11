@@ -1,23 +1,31 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
+/**
+ * A cart line. Name/price/image are copies for display only —
+ * the server re-prices everything from lib/catalog.ts at checkout.
+ */
 export type CartItem = {
-  id: number;
+  key: string; // `${productId}:${size}`
+  productId: string;
+  size: string;
   name: string;
-  price: string;
+  price: number;
   image: string;
   quantity: number;
 };
 
+type NewCartItem = Omit<CartItem, 'key' | 'quantity'>;
+
 type CartStore = {
   items: CartItem[];
-  addItem: (item: Omit<CartItem, 'quantity'>) => void;
-  removeItem: (id: number) => void;
-  updateQuantity: (id: number, quantity: number) => void;
+  addItem: (item: NewCartItem) => void;
+  removeItem: (key: string) => void;
+  updateQuantity: (key: string, quantity: number) => void;
   clearCart: () => void;
-  getTotalItems: () => number;
-  getTotalPrice: () => number;
 };
+
+const MAX_QTY = 10;
 
 export const useCartStore = create<CartStore>()(
   persist(
@@ -25,49 +33,33 @@ export const useCartStore = create<CartStore>()(
       items: [],
 
       addItem: (item) => {
-        const existing = get().items.find((i) => i.id === item.id);
+        const key = `${item.productId}:${item.size}`;
+        const existing = get().items.find((i) => i.key === key);
         if (existing) {
-          set({
-            items: get().items.map((i) =>
-              i.id === item.id ? { ...i, quantity: i.quantity + 1 } : i
-            ),
-          });
+          get().updateQuantity(key, existing.quantity + 1);
         } else {
-          set({ items: [...get().items, { ...item, quantity: 1 }] });
+          set({ items: [...get().items, { ...item, key, quantity: 1 }] });
         }
       },
 
-      removeItem: (id) => {
-        set({ items: get().items.filter((i) => i.id !== id) });
-      },
+      removeItem: (key) => set({ items: get().items.filter((i) => i.key !== key) }),
 
-      updateQuantity: (id, quantity) => {
-        if (quantity <= 0) {
-          get().removeItem(id);
-        } else {
-          set({
-            items: get().items.map((i) =>
-              i.id === id ? { ...i, quantity } : i
-            ),
-          });
-        }
+      updateQuantity: (key, quantity) => {
+        if (quantity <= 0) return get().removeItem(key);
+        const q = Math.min(quantity, MAX_QTY);
+        set({ items: get().items.map((i) => (i.key === key ? { ...i, quantity: q } : i)) });
       },
 
       clearCart: () => set({ items: [] }),
-
-      getTotalItems: () => {
-        return get().items.reduce((total, item) => total + item.quantity, 0);
-      },
-
-      getTotalPrice: () => {
-        return get().items.reduce((total, item) => {
-          const price = parseInt(item.price.replace(/[₦,]/g, ''));
-          return total + price * item.quantity;
-        }, 0);
-      },
     }),
     {
-      name: 'bgv_cart', // localStorage key
+      name: 'bgv_cart',
+      version: 2,
+      // Carts saved by the old version have a different shape — start fresh.
+      migrate: () => ({ items: [] }),
     }
   )
 );
+
+export const cartCount = (items: CartItem[]) => items.reduce((n, i) => n + i.quantity, 0);
+export const cartSubtotal = (items: CartItem[]) => items.reduce((n, i) => n + i.price * i.quantity, 0);

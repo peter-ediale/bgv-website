@@ -1,22 +1,23 @@
 import { NextResponse } from 'next/server';
+import { ADMIN_COOKIE, SESSION_SECONDS, checkPassword, createSessionToken } from '../../../../lib/auth';
 
 export async function POST(req: Request) {
-  try {
-    const { password } = await req.json();
-    const ADMIN_PW = process.env.ADMIN_PASSWORD;
-    if (!ADMIN_PW) {
-      return NextResponse.json({ ok: false, error: 'Admin password not configured' }, { status: 500 });
-    }
-
-    if (password === ADMIN_PW) {
-      const res = NextResponse.json({ ok: true });
-      // set a simple auth cookie (HttpOnly)
-      res.headers.set('Set-Cookie', `admin_auth=1; Path=/; HttpOnly; Max-Age=86400; SameSite=Lax`);
-      return res;
-    }
-
-    return NextResponse.json({ ok: false }, { status: 401 });
-  } catch (err) {
-    return NextResponse.json({ ok: false, error: String(err) }, { status: 400 });
+  if (!process.env.ADMIN_PASSWORD || !process.env.ADMIN_SESSION_SECRET) {
+    return NextResponse.json({ error: 'Admin login is not configured.' }, { status: 500 });
   }
+  const { password } = await req.json().catch(() => ({}));
+  if (typeof password !== 'string' || !(await checkPassword(password))) {
+    await new Promise((r) => setTimeout(r, 800)); // slow down password guessing
+    return NextResponse.json({ error: 'Wrong password.' }, { status: 401 });
+  }
+
+  const res = NextResponse.json({ ok: true });
+  res.cookies.set(ADMIN_COOKIE, await createSessionToken(), {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'strict',
+    path: '/',
+    maxAge: SESSION_SECONDS,
+  });
+  return res;
 }
