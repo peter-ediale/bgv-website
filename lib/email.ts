@@ -34,9 +34,10 @@ export async function sendOrderConfirmation(order: Order): Promise<void> {
       <h2>Thank you, ${esc(order.customer.name)} 🙏🏾</h2>
       <p>Your B&amp;GV order <strong>${esc(order.id)}</strong> is confirmed. We'll reach out on ${esc(order.customer.phone)} when it ships.</p>
       <table width="100%" cellpadding="6" style="border-collapse:collapse">${lines}
+        <tr><td>Delivery</td><td align="right">${formatNaira(order.deliveryFee)}</td></tr>
         <tr><td><strong>Total</strong></td><td align="right"><strong>${formatNaira(order.total)}</strong></td></tr>
       </table>
-      <p>Delivery to: ${esc(order.customer.address)}</p>
+      <p>Delivery to: ${esc(order.customer.address)}, ${esc(order.customer.state ?? '')}</p>
       <p>Blessings &amp; Good Vibes ✨</p>
     </div>`;
   await sendEmail(order.customer.email, `Your B&GV order ${order.id} is confirmed`, html);

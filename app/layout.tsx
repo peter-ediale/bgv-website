@@ -1,33 +1,34 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
+import type { Metadata, Viewport } from 'next';
+import { Anton, Inter } from 'next/font/google';
+import { site } from '../lib/site';
+import './globals.css';
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+const inter = Inter({ variable: '--font-inter', subsets: ['latin'] });
+const anton = Anton({ variable: '--font-anton', subsets: ['latin'], weight: '400' });
 
 export const metadata: Metadata = {
-  title: "B&GV — Blessings & Good Vibes",
-  description: "Premium Nigerian streetwear by Blessings & Good Vibes. Shop the latest edition.",
+  metadataBase: new URL(site.url),
+  title: {
+    default: `${site.name} — ${site.fullName}`,
+    template: `%s | ${site.name}`,
+  },
+  description: site.tagline,
+  openGraph: {
+    type: 'website',
+    siteName: `${site.name} — ${site.fullName}`,
+    images: [{ url: '/og.jpg', width: 1200, height: 630, alt: site.fullName }],
+  },
+  twitter: { card: 'summary_large_image' },
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export const viewport: Viewport = {
+  themeColor: '#0b0b0b',
+};
+
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html
-      lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
-    >
-      <body className="min-h-full flex flex-col">{children}</body>
+    <html lang="en" className={`${inter.variable} ${anton.variable}`}>
+      <body className="min-h-screen flex flex-col">{children}</body>
     </html>
   );
 }

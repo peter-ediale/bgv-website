@@ -21,12 +21,24 @@ payments are faked and orders are saved to `data/orders.json` (git-ignored).
 | What | Where |
 |---|---|
 | Products, prices, sizes, which edition is live | `lib/catalog.ts` |
+| Socials, WhatsApp, announcements, delivery fees, size chart | `lib/site.ts` |
+| Colours, fonts, button styles | `app/globals.css` |
+| Pages (home, shop, product, checkout…) | `app/(store)/` |
+| Shared header, footer, cart drawer | `app/components/site/` |
 | Checkout rules (pricing, validation) | `lib/orders.ts` |
 | Paystack | `lib/payments.ts`, `app/api/payments/*` |
-| Order storage (Supabase / local file) | `lib/db.ts`, `supabase/schema.sql` |
+| Orders, waitlist, messages (Supabase / local files) | `lib/db.ts`, `supabase/schema.sql` |
 | Order emails (Resend) | `lib/email.ts` |
 | Admin login | `lib/auth.ts`, `proxy.ts`, `app/admin/*` |
 
 ## Launching Edition 2
 
 In `lib/catalog.ts`, change Edition 2's `status` from `'coming-soon'` to `'live'`.
+
+## Adding new photos
+
+Drop them in `public/images/...`, then shrink them for mobile data:
+
+```bash
+node scripts/optimize-images.mjs
+```

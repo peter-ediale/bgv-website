@@ -2,8 +2,8 @@ import { NextResponse } from 'next/server';
 import { insertOrder } from '../../../../lib/db';
 import { newOrderId, OrderError, priceCart, validateCustomer, type Order } from '../../../../lib/orders';
 import { initializePaystack, mockPaymentsAllowed, paystackKey } from '../../../../lib/payments';
+import { deliveryFee } from '../../../../lib/site';
 
-const DELIVERY_FEE = 0; // TODO (Phase 2): Lagos vs. outside-Lagos delivery fees
 
 export async function POST(req: Request) {
   let body: { items?: unknown; customer?: unknown };
@@ -17,12 +17,13 @@ export async function POST(req: Request) {
   try {
     const { items, subtotal } = priceCart(body.items);
     const customer = validateCustomer(body.customer);
+    const fee = deliveryFee(customer.state, subtotal);
     order = {
       id: newOrderId(),
       items,
       subtotal,
-      deliveryFee: DELIVERY_FEE,
-      total: subtotal + DELIVERY_FEE,
+      deliveryFee: fee,
+      total: subtotal + fee,
       customer,
       status: 'pending',
       createdAt: new Date().toISOString(),

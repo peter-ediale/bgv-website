@@ -1,5 +1,6 @@
 import 'server-only';
 import { getProduct, isPurchasable } from './catalog';
+import { NIGERIAN_STATES } from './site';
 
 export type OrderLine = {
   productId: string;
@@ -15,6 +16,7 @@ export type Customer = {
   email: string;
   phone: string;
   address: string;
+  state: string;
 };
 
 export type OrderStatus = 'pending' | 'paid' | 'shipped' | 'cancelled';
@@ -70,11 +72,13 @@ export function validateCustomer(raw: unknown): Customer {
     email: String(r.email ?? '').trim().toLowerCase().slice(0, 200),
     phone: String(r.phone ?? '').trim().slice(0, 20),
     address: String(r.address ?? '').trim().slice(0, 500),
+    state: String(r.state ?? '').trim(),
   };
   if (c.name.length < 2) throw new OrderError('Please enter your full name.');
   if (!EMAIL_RE.test(c.email)) throw new OrderError('Please enter a valid email address.');
   if (!PHONE_RE.test(c.phone)) throw new OrderError('Please enter a valid phone number.');
   if (c.address.length < 10) throw new OrderError('Please enter your full delivery address.');
+  if (!(NIGERIAN_STATES as readonly string[]).includes(c.state)) throw new OrderError('Please choose your state.');
   return c;
 }
 

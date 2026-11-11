@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { ADMIN_COOKIE, verifySessionToken } from '../../../lib/auth';
-import { getOrders } from '../../../lib/db';
+import { getMessages, getOrders, getSubscribers, type Message, type Subscriber } from '../../../lib/db';
 import { formatNaira } from '../../../lib/catalog';
 import type { Order } from '../../../lib/orders';
 
@@ -20,9 +20,11 @@ export default async function AdminOrdersPage() {
   if (!(await verifySessionToken((await cookies()).get(ADMIN_COOKIE)?.value))) redirect('/admin/login');
 
   let orders: Order[] = [];
+  let subscribers: Subscriber[] = [];
+  let messages: Message[] = [];
   let loadError = false;
   try {
-    orders = await getOrders();
+    [orders, subscribers, messages] = await Promise.all([getOrders(), getSubscribers(), getMessages()]);
   } catch (err) {
     console.error('[admin] failed to load orders', err);
     loadError = true;
@@ -61,7 +63,10 @@ export default async function AdminOrdersPage() {
                   <div className="text-sm mt-2">
                     {o.customer?.name} · {o.customer?.email} · {o.customer?.phone ?? '—'}
                   </div>
-                  <div className="text-sm text-[#8B7A6B]">{o.customer?.address}</div>
+                  <div className="text-sm text-[#8B7A6B]">
+                    {o.customer?.address}
+                    {o.customer?.state ? `, ${o.customer.state}` : ''}
+                  </div>
                 </div>
                 <div className="font-medium">{formatNaira(o.total ?? 0)}</div>
               </div>
@@ -72,6 +77,31 @@ export default async function AdminOrdersPage() {
                   </li>
                 ))}
               </ul>
+            </div>
+          ))}
+        </div>
+
+        <h2 className="font-serif text-2xl mt-12 mb-4">Waitlist & newsletter ({subscribers.length})</h2>
+        <div className="bg-white rounded shadow divide-y text-sm">
+          {subscribers.length === 0 && <p className="p-4 text-[#8B7A6B]">No sign-ups yet.</p>}
+          {subscribers.map((s) => (
+            <div key={s.email + s.source} className="p-3 flex justify-between gap-4">
+              <span>{s.email}</span>
+              <span className="text-[#8B7A6B]">{s.source === 'edition-2-waitlist' ? 'Edition 2 waitlist' : 'Newsletter'} · {new Date(s.created_at).toLocaleDateString('en-NG')}</span>
+            </div>
+          ))}
+        </div>
+
+        <h2 className="font-serif text-2xl mt-12 mb-4">Messages ({messages.length})</h2>
+        <div className="space-y-3">
+          {messages.length === 0 && <p className="text-sm text-[#8B7A6B]">No messages yet.</p>}
+          {messages.map((m, i) => (
+            <div key={i} className="bg-white rounded shadow p-4 text-sm">
+              <div className="font-medium">
+                {m.name} · <a href={`mailto:${m.email}`} className="underline">{m.email}</a>
+              </div>
+              <div className="text-[#8B7A6B] text-xs">{new Date(m.created_at).toLocaleString('en-NG')}</div>
+              <p className="mt-2 whitespace-pre-wrap">{m.message}</p>
             </div>
           ))}
         </div>

@@ -58,24 +58,24 @@ const fromRow = (r: Row): Order => ({
 
 // ---- Local JSON file (development only) --------------------------------------
 
-async function localFile() {
+async function localFile<T = Order>(name = 'orders') {
   if (!warned && process.env.NODE_ENV === 'production') {
     warned = true;
-    console.warn('[db] Supabase is not configured — using a local file. Orders will NOT persist on a host.');
+    console.warn('[db] Supabase is not configured — using local files. Data will NOT persist on a host.');
   }
   const fs = await import('node:fs/promises');
   const path = await import('node:path');
   const dir = path.join(process.cwd(), 'data');
-  const file = path.join(dir, 'orders.json');
+  const file = path.join(dir, `${name}.json`);
   return {
-    async read(): Promise<Order[]> {
+    async read(): Promise<T[]> {
       try {
-        return JSON.parse(await fs.readFile(file, 'utf-8')) as Order[];
+        return JSON.parse(await fs.readFile(file, 'utf-8')) as T[];
       } catch {
         return [];
       }
     },
-    async write(rows: Order[]) {
+    async write(rows: T[]) {
       await fs.mkdir(dir, { recursive: true });
       await fs.writeFile(file, JSON.stringify(rows, null, 2));
     },
@@ -139,4 +139,60 @@ export async function markOrderPaid(id: string): Promise<boolean> {
   row.paidAt = paidAt;
   await db.write(rows);
   return true;
+}
+
+// ---- Waitlist / newsletter -------------------------------------------------------
+
+export type Subscriber = { email: string; source: string; created_at: string };
+
+/** Returns false if the email was already subscribed for this source. */
+export async function addSubscriber(email: string, source: string): Promise<boolean> {
+  const row: Subscriber = { email, source, created_at: new Date().toISOString() };
+  if (supabase) {
+    const { error } = await supabase.from('subscribers').insert(row);
+    if (error?.code === '23505') return false; // unique violation = already on the list
+    if (error) throw new Error(`addSubscriber: ${error.message}`);
+    return true;
+  }
+  const db = await localFile<Subscriber>('subscribers');
+  const rows = await db.read();
+  if (rows.some((r) => r.email === email && r.source === source)) return false;
+  rows.unshift(row);
+  await db.write(rows);
+  return true;
+}
+
+export async function getSubscribers(): Promise<Subscriber[]> {
+  if (supabase) {
+    const { data, error } = await supabase.from('subscribers').select('*').order('created_at', { ascending: false });
+    if (error) throw new Error(`getSubscribers: ${error.message}`);
+    return data as Subscriber[];
+  }
+  return (await localFile<Subscriber>('subscribers')).read();
+}
+
+// ---- Contact messages ------------------------------------------------------------
+
+export type Message = { name: string; email: string; message: string; created_at: string };
+
+export async function addMessage(m: Omit<Message, 'created_at'>): Promise<void> {
+  const row: Message = { ...m, created_at: new Date().toISOString() };
+  if (supabase) {
+    const { error } = await supabase.from('messages').insert(row);
+    if (error) throw new Error(`addMessage: ${error.message}`);
+    return;
+  }
+  const db = await localFile<Message>('messages');
+  const rows = await db.read();
+  rows.unshift(row);
+  await db.write(rows);
+}
+
+export async function getMessages(): Promise<Message[]> {
+  if (supabase) {
+    const { data, error } = await supabase.from('messages').select('*').order('created_at', { ascending: false });
+    if (error) throw new Error(`getMessages: ${error.message}`);
+    return data as Message[];
+  }
+  return (await localFile<Message>('messages')).read();
 }

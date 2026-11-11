@@ -18,3 +18,23 @@ create index if not exists orders_created_at_idx on public.orders (created_at de
 -- Lock the table down: only the server (using the service-role key) can read/write.
 -- The public/anon key gets no access because there are no policies.
 alter table public.orders enable row level security;
+
+-- Newsletter + Edition 2 waitlist
+create table if not exists public.subscribers (
+  id          bigint generated always as identity primary key,
+  email       text not null,
+  source      text not null,                  -- 'newsletter' or 'edition-2-waitlist'
+  created_at  timestamptz not null default now(),
+  unique (email, source)
+);
+alter table public.subscribers enable row level security;
+
+-- Contact form messages
+create table if not exists public.messages (
+  id          bigint generated always as identity primary key,
+  name        text not null,
+  email       text not null,
+  message     text not null,
+  created_at  timestamptz not null default now()
+);
+alter table public.messages enable row level security;

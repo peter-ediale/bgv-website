@@ -17,7 +17,7 @@ Goal: a premium, mobile-first store for **Blessings & Good Vibes**, ready for th
 
 ---
 
-## Phase 1 — Foundations (make it safe & deployable) ← *in progress*
+## Phase 1 — Foundations (make it safe & deployable) ✅
 
 - [x] Production build passes (`npm run build`)
 - [x] Server decides prices — customer can't change what they pay
@@ -31,7 +31,7 @@ Goal: a premium, mobile-first store for **Blessings & Good Vibes**, ready for th
 - [ ] Scrub that customer data from the public GitHub history (needs a force-push — your call)
 - [x] `.env.example` documenting every setting
 
-## Phase 2 — Redesign (make it premium)
+## Phase 2 — Redesign (make it premium) ✅
 
 Inspiration: Ashluxe, ASHLUXURY, High Fashion by JOL. What they all share:
 - Thin **announcement bar** on top ("Edition 2 drops 12.12 — join the list")
@@ -43,22 +43,24 @@ Inspiration: Ashluxe, ASHLUXURY, High Fashion by JOL. What they all share:
 - Big footer: shop links, care/shipping/returns, socials, newsletter
 
 Work items:
-- [ ] Brand system: one font pair, color tokens, spacing, button styles
-- [ ] One shared header (with mobile menu) + footer used on every page
-- [ ] Animated hero slider (photos or a short muted video)
-- [ ] Edition 2 launch page: countdown, waitlist signup (saved to Supabase)
-- [ ] Product detail page: gallery, size picker, size guide, fabric/care, "complete the look"
-- [ ] Slide-out cart drawer
-- [ ] Checkout: phone, state/city, delivery fee (Lagos vs. outside Lagos)
-- [ ] Order confirmation page + email
-- [ ] Contact form + "Notify me" actually saving to Supabase
-- [ ] Policy pages: Shipping, Returns, Size guide, Privacy, Terms
-- [ ] Admin: mark orders shipped, see waitlist & messages
-- [ ] Compress all photos (some are 3–5 MB → target < 300 KB)
+- [x] Brand system: one font pair, color tokens, spacing, button styles
+- [x] One shared header (with mobile menu) + footer used on every page
+- [x] Animated hero slider (photos or a short muted video)
+- [x] Edition 2 launch page: countdown, waitlist signup (saved to Supabase)
+- [x] Product detail page: gallery, size picker, size guide, fabric/care, "complete the look"
+- [x] Slide-out cart drawer
+- [x] Checkout: phone, state/city, delivery fee (Lagos vs. outside Lagos)
+- [x] Order confirmation page + email
+- [x] Contact form + "Notify me" actually saving to Supabase
+- [x] Policy pages: Shipping & Returns, Size guide, Privacy
+- [ ] Terms of sale page
+- [x] Admin: see waitlist & messages
+- [ ] Admin: mark orders shipped
+- [x] Compress all photos (some are 3–5 MB → target < 300 KB)
 
 ## Phase 3 — Launch polish
 
-- [ ] SEO: titles, descriptions, social-share images (Instagram/WhatsApp previews), sitemap
+- [x] SEO: titles, descriptions, social-share image, sitemap, robots, favicon
 - [ ] Analytics (Cloudflare Web Analytics — free, no cookie banner needed)
 - [ ] Test on real phones (Android + iPhone), slow 3G
 - [ ] Real Paystack test-mode purchase end-to-end, then switch to live keys
@@ -71,6 +73,15 @@ Work items:
 - [ ] (Optional) connect your own domain
 
 ---
+
+## Before launch — confirm these placeholders (all in `lib/site.ts` / `lib/catalog.ts`)
+
+- [ ] Delivery fees (now ₦3,000 Lagos / ₦5,000 elsewhere) and delivery times
+- [ ] Size chart measurements (now typical boxy-tee numbers — measure your real pieces)
+- [ ] Exchange/returns policy wording on `/shipping-returns`
+- [ ] Product descriptions, prices, sizes
+- [ ] Instagram, TikTok, WhatsApp number (they appear automatically once filled in)
+- [ ] Edition 2 launch date → add `launchDate` to show a countdown; flip `status` to `'live'` on the day
 
 ## What I need from you
 

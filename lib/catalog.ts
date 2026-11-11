@@ -12,6 +12,9 @@ export type Edition = {
   tagline: string;
   /** 'live' = can be bought. 'coming-soon' = visible but not purchasable. */
   status: 'live' | 'coming-soon';
+  /** Optional launch date/time (ISO, Lagos time). Shows a countdown when set. */
+  launchDate?: string;
+  description: string;
 };
 
 export type Product = {
@@ -25,33 +28,49 @@ export type Product = {
   edition: EditionId;
   color: string;
   sizes: string[];
+  description: string;
+  /** Background behind the product mockup (matches the photo's own background so no bars show). */
+  bg: string;
   soldOut?: boolean;
 };
 
 export const editions: Edition[] = [
-  { id: 1, name: 'Edition 1', tagline: 'Where it all started', status: 'live' },
-  // Flip to 'live' on launch day.
-  { id: 2, name: 'Edition 2 — Evolve', tagline: 'Still evolving, still building', status: 'coming-soon' },
+  {
+    id: 1,
+    name: 'Edition 1',
+    tagline: 'Where it all started',
+    status: 'live',
+    description: 'The first drop. Summer tees with the signature gold B&GV chest patch — the prototype that got the idea out of our heads and into the world.',
+  },
+  {
+    id: 2,
+    name: 'Edition 2 — Evolve',
+    tagline: 'Never stay the same',
+    // Flip to 'live' on launch day. Add launchDate (e.g. '2026-12-12T18:00:00+01:00') to show a countdown.
+    status: 'coming-soon',
+    description: 'Break the pattern. Rewrite the rules. Grow through every phase, every failure, every win. Built for those who move different.',
+  },
 ];
 
+const E1_BG = 'linear-gradient(#d4d4d6, #e3e3e3)';
 const TEE_SIZES = ['S', 'M', 'L', 'XL', 'XXL'];
 const ONE_SIZE = ['One Size'];
 
 export const products: Product[] = [
   // ---- Edition 1 ----------------------------------------------------------
-  { id: 'e1-summer-tee-black', name: 'Summer Tee — Black', price: 15000, images: ['/images/products/edition1/product1.jpeg'], category: 'T-Shirt', edition: 1, color: 'black', sizes: TEE_SIZES },
-  { id: 'e1-summer-tee-brown', name: 'Summer Tee — Brown', price: 15000, images: ['/images/products/edition1/product2.jpeg'], category: 'T-Shirt', edition: 1, color: 'brown', sizes: TEE_SIZES },
-  { id: 'e1-summer-tee-red', name: 'Summer Tee — Red', price: 15000, images: ['/images/products/edition1/product3.jpeg'], category: 'T-Shirt', edition: 1, color: 'red', sizes: TEE_SIZES },
-  { id: 'e1-summer-tee-white', name: 'Summer Tee — White', price: 15000, images: ['/images/products/edition1/product4.jpeg'], category: 'T-Shirt', edition: 1, color: 'white', sizes: TEE_SIZES },
+  { id: 'e1-summer-tee-black', bg: E1_BG, name: 'Summer Tee — Black', price: 15000, images: ['/images/products/edition1/product1.jpeg'], category: 'T-Shirt', edition: 1, color: 'black', sizes: TEE_SIZES, description: 'Classic black summer tee with the gold B&GV chest patch and barcode hem tag.' },
+  { id: 'e1-summer-tee-brown', bg: E1_BG, name: 'Summer Tee — Brown', price: 15000, images: ['/images/products/edition1/product2.jpeg'], category: 'T-Shirt', edition: 1, color: 'brown', sizes: TEE_SIZES, description: 'Earth-brown summer tee with the gold B&GV chest patch and barcode hem tag.' },
+  { id: 'e1-summer-tee-red', bg: E1_BG, name: 'Summer Tee — Red', price: 15000, images: ['/images/products/edition1/product3.jpeg'], category: 'T-Shirt', edition: 1, color: 'red', sizes: TEE_SIZES, description: 'Bold red summer tee with the gold B&GV chest patch and barcode hem tag.' },
+  { id: 'e1-summer-tee-white', bg: E1_BG, name: 'Summer Tee — White', price: 15000, images: ['/images/products/edition1/product4.jpeg'], category: 'T-Shirt', edition: 1, color: 'white', sizes: TEE_SIZES, description: 'Clean white summer tee with the gold B&GV chest patch and barcode hem tag.' },
 
   // ---- Edition 2 — Evolve -------------------------------------------------
-  { id: 'e2-evolve-tee-black', name: 'Evolve Tee — Black', price: 20000, images: ['/images/products/edition2/Edition2_Product1.jpeg'], category: 'T-Shirt', edition: 2, color: 'black', sizes: TEE_SIZES },
-  { id: 'e2-evolve-tee-white', name: 'Evolve Tee — White', price: 20000, images: ['/images/products/edition2/Edition2_Product2.jpeg'], category: 'T-Shirt', edition: 2, color: 'white', sizes: TEE_SIZES },
-  { id: 'e2-evolve-tee-brown', name: 'Evolve Tee — Brown', price: 20000, images: ['/images/products/edition2/Edition2_Product3.jpeg'], category: 'T-Shirt', edition: 2, color: 'brown', sizes: TEE_SIZES },
-  { id: 'e2-evolve-tank-black', name: 'Evolve Tank Top — Black', price: 10000, images: ['/images/products/edition2/Edition2_Product4.jpeg'], category: 'Tank Top', edition: 2, color: 'black', sizes: TEE_SIZES },
-  { id: 'e2-evolve-tank-white', name: 'Evolve Tank Top — White', price: 10000, images: ['/images/products/edition2/Edition2_Product5.jpeg'], category: 'Tank Top', edition: 2, color: 'white', sizes: TEE_SIZES },
-  { id: 'e2-evolve-cap-black', name: 'Evolve Cap — Black', price: 15000, images: ['/images/products/edition2/Edition2_Product6.jpeg'], category: 'Cap', edition: 2, color: 'black', sizes: ONE_SIZE },
-  { id: 'e2-evolve-cap-brown', name: 'Evolve Cap — Brown', price: 15000, images: ['/images/products/edition2/Edition2_Product7.jpeg'], category: 'Cap', edition: 2, color: 'brown', sizes: ONE_SIZE },
+  { id: 'e2-evolve-tee-black', name: 'Evolve Tee — Black', price: 20000, images: ['/images/products/edition2/Edition2_Product1.jpeg'], bg: '#fff', category: 'T-Shirt', edition: 2, color: 'black', sizes: TEE_SIZES, description: 'Boxy tee with the & mark on the chest and the EVOLVE manifesto across the back: never stay the same.' },
+  { id: 'e2-evolve-tee-white', name: 'Evolve Tee — White', price: 20000, images: ['/images/products/edition2/Edition2_Product2.jpeg'], bg: '#000', category: 'T-Shirt', edition: 2, color: 'white', sizes: TEE_SIZES, description: 'Boxy tee with the B&GV chest logo and an ornate EVOLVE crest print on the back.' },
+  { id: 'e2-evolve-tee-brown', name: 'Evolve Tee — Brown', price: 20000, images: ['/images/products/edition2/Edition2_Product3.jpeg'], bg: '#000', category: 'T-Shirt', edition: 2, color: 'brown', sizes: TEE_SIZES, description: 'Clay-brown boxy tee. Front: the & mark. Back: “Beyond who you were yesterday — EVOLVE.”' },
+  { id: 'e2-evolve-tank-black', name: 'Evolve Tank Top — Black', price: 10000, images: ['/images/products/edition2/Edition2_Product4.jpeg'], bg: '#000', category: 'Tank Top', edition: 2, color: 'black', sizes: TEE_SIZES, description: 'Sleeveless tank with the B&GV chest logo and the & mark repeated down the side.' },
+  { id: 'e2-evolve-tank-white', name: 'Evolve Tank Top — White', price: 10000, images: ['/images/products/edition2/Edition2_Product5.jpeg'], bg: '#fff', category: 'Tank Top', edition: 2, color: 'white', sizes: TEE_SIZES, description: 'White sleeveless tank with the B&GV chest logo and the & mark repeated down the side.' },
+  { id: 'e2-evolve-cap-black', name: 'Evolve Cap — Black', price: 15000, images: ['/images/products/edition2/Edition2_Product6.jpeg'], bg: '#fff', category: 'Cap', edition: 2, color: 'black', sizes: ONE_SIZE, description: 'Structured cap with the embroidered & mark.' },
+  { id: 'e2-evolve-cap-brown', name: 'Evolve Cap — Brown', price: 15000, images: ['/images/products/edition2/Edition2_Product7.jpeg'], bg: '#fff', category: 'Cap', edition: 2, color: 'brown', sizes: ONE_SIZE, description: 'Structured clay-brown cap with the embroidered & mark.' },
 ];
 
 // ---- Helpers ----------------------------------------------------------------
