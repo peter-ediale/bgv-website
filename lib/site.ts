@@ -6,7 +6,7 @@ export const site = {
   name: 'B&GV',
   fullName: 'Blessings & Good Vibes',
   tagline: 'Premium streetwear. Built for those who move different.',
-  url: process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000',
+  url: process.env.NEXT_PUBLIC_BASE_URL || 'https://bgv-website.dirent.workers.dev',
 
   /** Messages that scroll in the thin bar at the very top. */
   announcements: [

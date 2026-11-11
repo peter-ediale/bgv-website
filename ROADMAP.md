@@ -67,9 +67,9 @@ Work items:
 
 ## Phase 4 — Deploy (step-by-step guide: [DEPLOY.md](DEPLOY.md))
 
-- [ ] Create Supabase project, run `supabase/schema.sql`
-- [ ] Paystack: add live keys + webhook URL
-- [ ] Deploy to Cloudflare Workers, set environment variables
+- [x] Create Supabase project, run `supabase/schema.sql`
+- [ ] Paystack: add webhook URL (test), then live keys after business verification
+- [x] Deploy to Cloudflare Workers, set environment variables — live at https://bgv-website.dirent.workers.dev
 - [ ] (Optional) connect your own domain
 
 ---

@@ -69,8 +69,8 @@ Order: **Supabase → Paystack → Cloudflare → connect them**. Budget about 1
    | `SUPABASE_URL` | from step 1 |
    | `SUPABASE_SERVICE_ROLE_KEY` | from step 1 |
 
-6. Open **Settings → Build → Variables and secrets** (the *build* ones) and add:
-   `NEXT_PUBLIC_BASE_URL` = your `https://bgv-website.….workers.dev` link.
+6. (Done in code: the live address `https://bgv-website.dirent.workers.dev` is set in `lib/site.ts`.
+   If you move to your own domain later, update it there.)
 7. Go to **Deployments → Retry / Redeploy** so the new settings are used.
 
 From now on, every time code is pushed to GitHub, Cloudflare rebuilds the site automatically.
