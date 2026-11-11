@@ -1,7 +1,7 @@
 # B&GV — Blessings & Good Vibes
 
 Online store for B&GV, built with Next.js, Tailwind CSS, Paystack and Supabase.
-See [ROADMAP.md](ROADMAP.md) for the plan to production.
+See [ROADMAP.md](ROADMAP.md) for the plan to production and [DEPLOY.md](DEPLOY.md) to put it online.
 
 ## Run it on your computer
 
@@ -29,7 +29,7 @@ payments are faked and orders are saved to `data/orders.json` (git-ignored).
 | Paystack | `lib/payments.ts`, `app/api/payments/*` |
 | Orders, waitlist, messages (Supabase / local files) | `lib/db.ts`, `supabase/schema.sql` |
 | Order emails (Resend) | `lib/email.ts` |
-| Admin login | `lib/auth.ts`, `proxy.ts`, `app/admin/*` |
+| Admin login | `lib/auth.ts`, `app/admin/*` |
 
 ## Launching Edition 2
 

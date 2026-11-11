@@ -8,7 +8,7 @@ Goal: a premium, mobile-first store for **Blessings & Good Vibes**, ready for th
 
 | Need | Choice | Free tier | Why |
 |---|---|---|---|
-| Hosting | **Cloudflare Workers** (via the OpenNext adapter) | 100k requests/day, commercial use allowed | Vercel's free "Hobby" plan is for non-commercial use only — a store is commercial. Netlify is the backup option. |
+| Hosting | **Cloudflare Workers** (via the OpenNext adapter — already set up) | 100k requests/day, commercial use allowed | Vercel's free "Hobby" plan is for non-commercial use only — a store is commercial. Netlify is the backup option. |
 | Database (orders, waitlist, messages) | **Supabase** (Postgres) | 500 MB, 50k monthly users | Easy dashboard you can open to see orders. Note: free projects pause after ~7 days with no traffic — one click to resume. |
 | Payments | **Paystack** | No monthly fee; per-sale fee only (1.5% + ₦100, capped at ₦2,000) | Standard in Nigeria; test mode is free. |
 | Emails (order confirmations) | **Resend** | 3,000 emails/month | Simple API, no extra package needed. |
@@ -28,7 +28,7 @@ Goal: a premium, mobile-first store for **Blessings & Good Vibes**, ready for th
 - [x] Secure admin login (signed cookie, can't be faked)
 - [x] Catalog restructured: numeric prices, sizes, stock status, edition info
 - [x] Customer data no longer tracked by git; old/broken config removed
-- [ ] Scrub that customer data from the public GitHub history (needs a force-push — your call)
+- [x] Customer data removed from git history (rewritten locally; force-push to GitHub pending)
 - [x] `.env.example` documenting every setting
 
 ## Phase 2 — Redesign (make it premium) ✅
@@ -65,7 +65,7 @@ Work items:
 - [ ] Test on real phones (Android + iPhone), slow 3G
 - [ ] Real Paystack test-mode purchase end-to-end, then switch to live keys
 
-## Phase 4 — Deploy
+## Phase 4 — Deploy (step-by-step guide: [DEPLOY.md](DEPLOY.md))
 
 - [ ] Create Supabase project, run `supabase/schema.sql`
 - [ ] Paystack: add live keys + webhook URL
