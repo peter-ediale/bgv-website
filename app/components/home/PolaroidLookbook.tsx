@@ -30,14 +30,14 @@ export default function PolaroidLookbook() {
   useScrollProgress(ref);
 
   // Fan-out amount: 0 while the stack is still, then eases to 1.
-  const t = 'clamp(0, (var(--p) - 0.12) * 1.6, 1)';
+  const t = 'clamp(0, (var(--p) - 0.08) * 1.5, 1)';
 
   return (
-    <section ref={ref} className="relative h-[260vh]" style={{ ['--p' as string]: 0 }} aria-label="Edition 1 lookbook">
+    <section ref={ref} className="relative h-[180vh]" style={{ ['--p' as string]: 0 }} aria-label="Edition 1 lookbook">
       <div className="sticky top-0 h-[100svh] overflow-hidden">
         <div className="absolute inset-x-0 top-20 md:top-24 z-10 mx-auto max-w-7xl px-4 md:px-8 flex items-start justify-between">
           <div>
-            <ChapterLabel className="text-muted">Chapter I — Where it started</ChapterLabel>
+            <ChapterLabel className="text-muted">Flashback — Edition 1, where it started</ChapterLabel>
             <h2 className="display text-5xl md:text-7xl mt-2">The lookbook</h2>
           </div>
           <p className="meta text-muted hidden sm:block" style={{ opacity: `calc(1 - ${t})` }}>

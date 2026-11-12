@@ -33,7 +33,7 @@ export default function EvolutionScroll() {
   return (
     <section
       ref={ref}
-      className="relative h-[320vh] bg-ink text-paper"
+      className="relative h-[230vh] bg-ink text-paper"
       style={{ ['--p' as string]: 0 }}
       aria-label="Evolve: crawl, learn, walk, run"
     >

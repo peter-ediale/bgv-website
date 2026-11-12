@@ -76,6 +76,22 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Edition 1 shop — the pieces you can buy right now, kept near the top */}
+      <section className="bg-bone">
+        <div className="mx-auto max-w-7xl px-4 md:px-8 py-20">
+          <div className="flex items-end justify-between mb-8">
+            <div>
+              <ChapterLabel className="text-muted">Chapter I — Available now</ChapterLabel>
+              <h2 className="display text-5xl md:text-6xl mt-2">Edition 1</h2>
+            </div>
+            <Link href="/shop/edition-1" className="eyebrow flex items-center gap-2 hover:opacity-60">
+              Shop all <ArrowIcon />
+            </Link>
+          </div>
+          <ProductRail products={edition1} />
+        </div>
+      </section>
+
       {/* Edition 2 teaser + waitlist */}
       <section id="edition-2" className="bg-ink text-paper scroll-mt-16">
         <div className="mx-auto max-w-7xl px-4 md:px-8 py-20 md:py-28 grid gap-14 md:grid-cols-2 md:items-center">
@@ -141,22 +157,6 @@ export default function Home() {
 
       {/* Lookbook: polaroids that fan out as you scroll */}
       <PolaroidLookbook />
-
-      {/* Edition 1 shop */}
-      <section className="bg-bone">
-        <div className="mx-auto max-w-7xl px-4 md:px-8 py-20">
-          <div className="flex items-end justify-between mb-8">
-            <div>
-              <ChapterLabel className="text-muted">Chapter I — Available now</ChapterLabel>
-              <h2 className="display text-5xl md:text-6xl mt-2">Edition 1</h2>
-            </div>
-            <Link href="/shop/edition-1" className="eyebrow flex items-center gap-2 hover:opacity-60">
-              Shop all <ArrowIcon />
-            </Link>
-          </div>
-          <ProductRail products={edition1} />
-        </div>
-      </section>
 
       {/* Story */}
       <section className="mx-auto max-w-7xl px-4 md:px-8 py-24 grid gap-12 md:grid-cols-2 md:items-center">
