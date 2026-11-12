@@ -14,6 +14,8 @@ export type Edition = {
   status: 'live' | 'coming-soon';
   /** Optional launch date/time (ISO, Lagos time). Shows a countdown when set. */
   launchDate?: string;
+  /** Short status shown in the live bar, e.g. 'In production', 'Dropping soon'. */
+  statusNote?: string;
   description: string;
 };
 
@@ -48,6 +50,7 @@ export const editions: Edition[] = [
     tagline: 'Never stay the same',
     // Flip to 'live' on launch day. Add launchDate (e.g. '2026-12-12T18:00:00+01:00') to show a countdown.
     status: 'coming-soon',
+    statusNote: 'In production',
     description: 'Break the pattern. Rewrite the rules. Grow through every phase, every failure, every win. Built for those who move different.',
   },
 ];

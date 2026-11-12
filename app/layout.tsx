@@ -1,10 +1,11 @@
 import type { Metadata, Viewport } from 'next';
-import { Anton, Inter } from 'next/font/google';
+import { Anton, Inter, JetBrains_Mono } from 'next/font/google';
 import { site } from '../lib/site';
 import './globals.css';
 
 const inter = Inter({ variable: '--font-inter', subsets: ['latin'] });
 const anton = Anton({ variable: '--font-anton', subsets: ['latin'], weight: '400' });
+const mono = JetBrains_Mono({ variable: '--font-jbmono', subsets: ['latin'], weight: ['400', '500'] });
 
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
@@ -27,7 +28,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${inter.variable} ${anton.variable}`}>
+    <html lang="en" className={`${inter.variable} ${anton.variable} ${mono.variable}`}>
       <body className="min-h-screen flex flex-col">{children}</body>
     </html>
   );

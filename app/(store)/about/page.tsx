@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
+import ChapterLabel from '../../components/fx/ChapterLabel';
 
 export const metadata: Metadata = {
   title: 'Our Story',
@@ -32,7 +33,7 @@ export default function AboutPage() {
   return (
     <>
       <section className="mx-auto max-w-7xl px-4 md:px-8 pt-16 md:pt-24 pb-16">
-        <p className="eyebrow text-muted">Our story</p>
+        <ChapterLabel className="text-muted">Prologue — Our story</ChapterLabel>
         <h1 className="display text-[15vw] md:text-[9rem] mt-4">
           Blessings &amp;
           <br />
@@ -52,7 +53,9 @@ export default function AboutPage() {
               <Image src={c.image} alt={c.title} fill sizes="(max-width: 768px) 100vw, 50vw" className="object-cover" style={{ objectPosition: '50% 35%' }} />
             </div>
             <div className={i % 2 ? 'md:pr-12' : 'md:pl-12'}>
-              <p className="eyebrow text-clay">{c.year}</p>
+              <ChapterLabel className="text-clay">
+                Chapter {['I', 'II', 'III'][i]} — {c.year}
+              </ChapterLabel>
               <h2 className="display text-5xl md:text-7xl mt-3">{c.title}</h2>
               <p className="mt-6 text-muted leading-relaxed max-w-md">{c.body}</p>
             </div>

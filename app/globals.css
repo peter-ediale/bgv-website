@@ -16,6 +16,7 @@
 
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   --font-display: var(--font-anton), Impact, "Arial Narrow", sans-serif;
+  --font-mono: var(--font-jbmono), ui-monospace, monospace;
 
   --animate-marquee: marquee 30s linear infinite;
   --animate-kenburns: kenburns 9s ease-out forwards;
@@ -56,6 +57,14 @@ body {
   letter-spacing: 0.22em;
   text-transform: uppercase;
   font-weight: 500;
+}
+
+/* Typewriter-style metadata labels: ( CHAPTER I ), LAGOS 14:51 … */
+@utility meta {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
 /* Big condensed headline type, echoing the EVOLVE print. */
