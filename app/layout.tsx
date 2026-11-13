@@ -4,8 +4,21 @@ import { site } from '../lib/site';
 import './globals.css';
 
 const inter = Inter({ variable: '--font-inter', subsets: ['latin'] });
-const anton = Anton({ variable: '--font-anton', subsets: ['latin'], weight: '400' });
-const mono = JetBrains_Mono({ variable: '--font-jbmono', subsets: ['latin'], weight: ['400', '500'] });
+// While Anton downloads, show a similar tall/narrow font (not wide Arial) so headlines don't jump.
+const anton = Anton({
+  variable: '--font-anton',
+  subsets: ['latin'],
+  weight: '400',
+  adjustFontFallback: false,
+  fallback: ['Impact', 'Haettenschweiler', 'sans-serif-condensed', 'Arial Narrow', 'sans-serif'],
+});
+const mono = JetBrains_Mono({
+  variable: '--font-jbmono',
+  subsets: ['latin'],
+  weight: ['400', '500'],
+  adjustFontFallback: false,
+  fallback: ['ui-monospace', 'Menlo', 'Consolas', 'monospace'],
+});
 
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),

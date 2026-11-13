@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import { useRef } from 'react';
-import { useScrollProgress } from '../fx/useScrollProgress';
+import { useInView } from '../fx/useInView';
 import ChapterLabel from '../fx/ChapterLabel';
 
 type Shot = {
@@ -14,7 +14,7 @@ type Shot = {
   phone: { x: number; y: number; r: number };
 };
 
-// Starts as a messy stack in the middle, fans out as you scroll (idea from oyin.design).
+// Starts as a messy stack in the middle and spreads out by itself when it comes into view (idea from oyin.design).
 const SHOTS: Shot[] = [
   { src: '/images/models/edition1/model2.jpeg', focus: '50% 30%', caption: 'E1 · 01', desk: { x: -0.33, y: -0.11, r: -7 }, phone: { x: -0.24, y: -0.25, r: -6 } },
   { src: '/images/models/edition1/model3.jpeg', focus: '50% 35%', caption: 'E1 · 02', desk: { x: -0.12, y: -0.16, r: 4 }, phone: { x: 0.24, y: -0.24, r: 5 } },
@@ -27,22 +27,17 @@ const SHOTS: Shot[] = [
 
 export default function PolaroidLookbook() {
   const ref = useRef<HTMLElement>(null);
-  useScrollProgress(ref);
-
-  // Fan-out amount: 0 while the stack is still, then eases to 1.
-  const t = 'clamp(0, (var(--p) - 0.08) * 1.5, 1)';
+  const spread = useInView(ref, 0.45);
+  const t = spread ? 1 : 0; // 0 = stacked, 1 = spread out (animated by CSS transitions below)
 
   return (
-    <section ref={ref} className="relative h-[180vh]" style={{ ['--p' as string]: 0 }} aria-label="Edition 1 lookbook">
-      <div className="sticky top-0 h-[100svh] overflow-hidden">
+    <section ref={ref} className="relative" aria-label="Edition 1 lookbook">
+      <div className="relative h-[100svh] min-h-[620px] max-h-[900px] overflow-hidden">
         <div className="absolute inset-x-0 top-20 md:top-24 z-10 mx-auto max-w-7xl px-4 md:px-8 flex items-start justify-between">
           <div>
             <ChapterLabel className="text-muted">Flashback — Edition 1, where it started</ChapterLabel>
             <h2 className="display text-5xl md:text-7xl mt-2">The lookbook</h2>
           </div>
-          <p className="meta text-muted hidden sm:block" style={{ opacity: `calc(1 - ${t})` }}>
-            Keep scrolling ↓
-          </p>
         </div>
 
         {SHOTS.map((s, i) => (
@@ -58,6 +53,7 @@ export default function PolaroidLookbook() {
               ['--mr' as string]: `${s.phone.r}deg`,
               ['--t' as string]: t,
               ['--stack' as string]: `${(i - 3) * 2.5}deg`,
+              transitionDelay: `${spread ? i * 70 : 0}ms`,
               zIndex: SHOTS.length - i,
             }}
           >
@@ -74,12 +70,16 @@ export default function PolaroidLookbook() {
         .lookbook-card {
           --x: var(--mx); --y: var(--my); --r: var(--mr);
           transform: translate(-50%, -50%)
-            translate(calc(var(--t) * var(--x) * 100vw), calc(var(--t) * var(--y) * 100svh))
+            translate(calc(var(--t) * var(--x) * 100vw), calc(var(--t) * var(--y) * min(100svh, 900px)))
             rotate(calc(var(--stack) * (1 - var(--t)) + var(--r) * var(--t)));
+          transition: transform 1.1s cubic-bezier(0.2, 0.75, 0.2, 1);
           will-change: transform;
         }
         @media (min-width: 768px) {
           .lookbook-card { --x: var(--dx); --y: var(--dy); --r: var(--dr); }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .lookbook-card { transition: none; }
         }
       `}</style>
     </section>

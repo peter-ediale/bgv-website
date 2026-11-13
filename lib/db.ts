@@ -197,3 +197,13 @@ export async function getMessages(): Promise<Message[]> {
   }
   return (await localFile<Message>('messages')).read();
 }
+
+// ---- Health check ----------------------------------------------------------------
+
+/** Makes one tiny real query so Supabase sees activity. Returns which storage is in use. */
+export async function pingDb(): Promise<'supabase' | 'local'> {
+  if (!supabase) return 'local';
+  const { error } = await supabase.from('subscribers').select('id', { head: true, count: 'exact' }).limit(1);
+  if (error) throw new Error(`pingDb: ${error.message}`);
+  return 'supabase';
+}

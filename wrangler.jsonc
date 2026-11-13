@@ -2,7 +2,7 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "bgv-website",
-  "main": ".open-next/worker.js",
+  "main": "custom-worker.ts",
   "compatibility_date": "2026-11-01",
   "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
   "assets": {
@@ -10,5 +10,7 @@
     "binding": "ASSETS"
   },
   "services": [{ "binding": "WORKER_SELF_REFERENCE", "service": "bgv-website" }],
-  "observability": { "enabled": true }
+  "observability": { "enabled": true },
+  // Daily at 09:00 UTC (10:00 Lagos): keep the free database awake. See custom-worker.ts.
+  "triggers": { "crons": ["0 9 * * *"] }
 }

@@ -15,6 +15,7 @@ const eslintConfig = defineConfig([
     // Cloudflare build output
     ".open-next/**",
     ".wrangler/**",
+    "custom-worker.ts",
   ]),
 ]);
 
